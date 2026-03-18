@@ -24,6 +24,7 @@ function initTables(db: Database.Database) {
       grade INTEGER NOT NULL CHECK(grade BETWEEN 1 AND 4),
       region TEXT NOT NULL,
       keywords TEXT NOT NULL DEFAULT '[]',
+      campus TEXT NOT NULL DEFAULT '인문' CHECK(campus IN ('인문','자연')),
       discord_id TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
       updated_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
@@ -71,6 +72,7 @@ export interface Student {
   grade: number;
   region: string;
   keywords: string;
+  campus: string;
   discord_id: string | null;
   created_at: string;
   updated_at: string;

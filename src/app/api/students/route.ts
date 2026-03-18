@@ -5,7 +5,7 @@ import getDb, { Student } from "@/lib/db";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, department, grade, region, keywords, discord_id } = body;
+    const { name, department, grade, region, keywords, campus, discord_id } = body;
 
     if (!name || !department || !grade || !region) {
       return NextResponse.json(
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
 
     const db = getDb();
     const stmt = db.prepare(
-      "INSERT INTO students (name, department, grade, region, keywords, discord_id) VALUES (?, ?, ?, ?, ?, ?)"
+      "INSERT INTO students (name, department, grade, region, keywords, campus, discord_id) VALUES (?, ?, ?, ?, ?, ?, ?)"
     );
     const result = stmt.run(
       name,
@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
       Number(grade),
       region,
       JSON.stringify(keywords || []),
+      campus || "인문",
       discord_id || null
     );
 

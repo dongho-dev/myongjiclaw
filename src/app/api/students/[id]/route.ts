@@ -41,7 +41,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { name, department, grade, region, keywords, discord_id } = body;
+    const { name, department, grade, region, keywords, campus, discord_id } = body;
 
     if (!name || !department || !grade || !region) {
       return NextResponse.json(
@@ -64,7 +64,7 @@ export async function PUT(
 
     db.prepare(
       `UPDATE students
-       SET name = ?, department = ?, grade = ?, region = ?, keywords = ?, discord_id = ?, updated_at = datetime('now', 'localtime')
+       SET name = ?, department = ?, grade = ?, region = ?, keywords = ?, campus = ?, discord_id = ?, updated_at = datetime('now', 'localtime')
        WHERE id = ?`
     ).run(
       name,
@@ -72,6 +72,7 @@ export async function PUT(
       Number(grade),
       region,
       JSON.stringify(keywords || []),
+      campus || "인문",
       discord_id || null,
       Number(id)
     );

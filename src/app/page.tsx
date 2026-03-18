@@ -24,6 +24,7 @@ export default function Home() {
     department: "",
     grade: "",
     region: "",
+    campus: "인문",
     discord_id: "",
   });
   const [keywordInput, setKeywordInput] = useState("");
@@ -73,6 +74,7 @@ export default function Home() {
           department: form.department,
           grade: Number(form.grade),
           region: form.region,
+          campus: form.campus,
           keywords,
           discord_id: form.discord_id || undefined,
         }),
@@ -86,7 +88,7 @@ export default function Home() {
       }
 
       setStatus({ type: "success", message: "프로필이 등록되었습니다!" });
-      setForm({ name: "", department: "", grade: "", region: "", discord_id: "" });
+      setForm({ name: "", department: "", grade: "", region: "", campus: "인문", discord_id: "" });
       setKeywords([]);
     } catch {
       setStatus({ type: "error", message: "서버에 연결할 수 없습니다." });
@@ -174,6 +176,27 @@ export default function Home() {
                 {d}
               </option>
             ))}
+          </select>
+        </div>
+
+        {/* 캠퍼스 */}
+        <div>
+          <label
+            htmlFor="campus"
+            className="mb-1.5 block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
+          >
+            캠퍼스 <span className="text-red-400">*</span>
+          </label>
+          <select
+            id="campus"
+            name="campus"
+            required
+            value={form.campus}
+            onChange={handleChange}
+            className={inputClass}
+          >
+            <option value="인문">인문캠퍼스</option>
+            <option value="자연">자연캠퍼스</option>
           </select>
         </div>
 

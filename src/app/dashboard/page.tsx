@@ -9,6 +9,7 @@ interface Student {
   grade: number;
   region: string;
   keywords: string[];
+  campus: string;
   discord_id: string | null;
   created_at: string;
 }
@@ -221,6 +222,9 @@ export default function Dashboard() {
                       지역
                     </th>
                     <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
+                      캠퍼스
+                    </th>
+                    <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
                       Discord
                     </th>
                     <th className="px-4 py-3 text-left font-semibold text-zinc-500 dark:text-zinc-400">
@@ -251,6 +255,15 @@ export default function Dashboard() {
                       </td>
                       <td className="px-4 py-3 text-zinc-600 dark:text-zinc-400">
                         {s.region}
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`rounded-md px-2 py-0.5 text-xs font-medium ${
+                          s.campus === "자연"
+                            ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400"
+                            : "bg-amber-50 text-amber-600 dark:bg-amber-950/50 dark:text-amber-400"
+                        }`}>
+                          {s.campus}
+                        </span>
                       </td>
                       <td className="px-4 py-3 text-zinc-500 dark:text-zinc-400">
                         {s.discord_id ? (
@@ -568,6 +581,24 @@ export default function Dashboard() {
                     className={modalInputClass}
                   />
                 </div>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  캠퍼스
+                </label>
+                <select
+                  value={editingStudent.campus}
+                  onChange={(e) =>
+                    setEditingStudent({
+                      ...editingStudent,
+                      campus: e.target.value,
+                    })
+                  }
+                  className={modalInputClass}
+                >
+                  <option value="인문">인문캠퍼스</option>
+                  <option value="자연">자연캠퍼스</option>
+                </select>
               </div>
               <div>
                 <label className="mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
