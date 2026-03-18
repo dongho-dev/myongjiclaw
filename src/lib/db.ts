@@ -41,6 +41,27 @@ function initTables(db: Database.Database) {
       UNIQUE(student_id, article_id)
     )
   `);
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS timetables (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      student_id INTEGER NOT NULL,
+      day TEXT NOT NULL CHECK(day IN ('mon','tue','wed','thu','fri')),
+      period INTEGER NOT NULL,
+      subject TEXT NOT NULL,
+      professor TEXT,
+      location TEXT,
+      FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+    )
+  `);
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS meal_cache (
+      date TEXT PRIMARY KEY,
+      data TEXT NOT NULL,
+      fetched_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime'))
+    )
+  `);
 }
 
 export interface Student {
@@ -61,6 +82,16 @@ export interface Notification {
   article_id: string;
   board_type: string;
   sent_at: string;
+}
+
+export interface TimetableEntry {
+  id: number;
+  student_id: number;
+  day: string;
+  period: number;
+  subject: string;
+  professor: string | null;
+  location: string | null;
 }
 
 export default getDb;
