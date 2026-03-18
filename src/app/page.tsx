@@ -1,334 +1,183 @@
-"use client";
-
-import { useState } from "react";
-
-const DEPARTMENTS = [
-  "국어국문학과", "영어영문학과", "중어중문학과", "일어일문학과",
-  "경영학과", "경제학과", "무역학과", "경영정보학과",
-  "법학과", "행정학과", "정치외교학과",
-  "컴퓨터공학과", "정보통신공학과", "전자공학과", "소프트웨어학과",
-  "수학과", "물리학과", "화학과",
-  "건축학과", "토목환경공학과", "교통공학과",
-  "식품영양학과", "아동학과",
-];
-
-const REGIONS = [
-  "서울", "경기", "인천", "강원",
-  "충북", "충남/대전", "전북", "전남/광주",
-  "경북/대구", "경남/부산/울산", "제주",
-];
-
-export default function Home() {
-  const [form, setForm] = useState({
-    name: "",
-    department: "",
-    grade: "",
-    region: "",
-    campus: "인문",
-    discord_id: "",
-  });
-  const [keywordInput, setKeywordInput] = useState("");
-  const [keywords, setKeywords] = useState<string[]>([]);
-  const [status, setStatus] = useState<{
-    type: "success" | "error";
-    message: string;
-  } | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-
-  function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  }
-
-  function addKeyword() {
-    const trimmed = keywordInput.trim();
-    if (trimmed && !keywords.includes(trimmed) && keywords.length < 10) {
-      setKeywords([...keywords, trimmed]);
-      setKeywordInput("");
-    }
-  }
-
-  function removeKeyword(kw: string) {
-    setKeywords(keywords.filter((k) => k !== kw));
-  }
-
-  function handleKeywordKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addKeyword();
-    }
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setStatus(null);
-    setSubmitting(true);
-
-    try {
-      const res = await fetch("/api/students", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: form.name,
-          department: form.department,
-          grade: Number(form.grade),
-          region: form.region,
-          campus: form.campus,
-          keywords,
-          discord_id: form.discord_id || undefined,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setStatus({ type: "error", message: data.error });
-        return;
-      }
-
-      setStatus({ type: "success", message: "프로필이 등록되었습니다!" });
-      setForm({ name: "", department: "", grade: "", region: "", campus: "인문", discord_id: "" });
-      setKeywords([]);
-    } catch {
-      setStatus({ type: "error", message: "서버에 연결할 수 없습니다." });
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  const inputClass =
-    "w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm outline-none transition-all focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:focus:ring-blue-500/20";
-
+export default function Landing() {
   return (
-    <div className="mx-auto max-w-lg">
-      {/* Hero */}
-      <div className="mb-8">
-        <div className="mb-3 inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600 dark:bg-blue-950 dark:text-blue-400">
-          명지대 학생 전용
-        </div>
-        <h1 className="mb-2 text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-          프로필 등록
-        </h1>
-        <p className="text-zinc-500 dark:text-zinc-400">
-          관심 키워드를 등록하면 맞춤 알림을 받을 수 있어요.
-        </p>
-      </div>
-
-      {/* Status */}
-      {status && (
-        <div
-          className={`mb-6 flex items-center gap-3 rounded-xl px-4 py-3 text-sm ${
-            status.type === "success"
-              ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300"
-              : "bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-300"
-          }`}
-        >
-          <span>{status.type === "success" ? "✓" : "!"}</span>
-          {status.message}
-        </div>
-      )}
-
-      {/* Form */}
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-5 rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
-      >
-        {/* 이름 */}
-        <div>
-          <label
-            htmlFor="name"
-            className="mb-1.5 block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-          >
-            이름 <span className="text-red-400">*</span>
-          </label>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            required
-            value={form.name}
-            onChange={handleChange}
-            placeholder="홍길동"
-            className={inputClass}
-          />
-        </div>
-
-        {/* 학과 */}
-        <div>
-          <label
-            htmlFor="department"
-            className="mb-1.5 block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-          >
-            학과 <span className="text-red-400">*</span>
-          </label>
-          <select
-            id="department"
-            name="department"
-            required
-            value={form.department}
-            onChange={handleChange}
-            className={inputClass}
-          >
-            <option value="">학과를 선택하세요</option>
-            {DEPARTMENTS.map((d) => (
-              <option key={d} value={d}>
-                {d}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* 캠퍼스 */}
-        <div>
-          <label
-            htmlFor="campus"
-            className="mb-1.5 block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-          >
-            캠퍼스 <span className="text-red-400">*</span>
-          </label>
-          <select
-            id="campus"
-            name="campus"
-            required
-            value={form.campus}
-            onChange={handleChange}
-            className={inputClass}
-          >
-            <option value="인문">인문캠퍼스</option>
-            <option value="자연">자연캠퍼스</option>
-          </select>
-        </div>
-
-        {/* 학년 + 지역 (2열) */}
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label
-              htmlFor="grade"
-              className="mb-1.5 block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-            >
-              학년 <span className="text-red-400">*</span>
-            </label>
-            <select
-              id="grade"
-              name="grade"
-              required
-              value={form.grade}
-              onChange={handleChange}
-              className={inputClass}
-            >
-              <option value="">선택</option>
-              <option value="1">1학년</option>
-              <option value="2">2학년</option>
-              <option value="3">3학년</option>
-              <option value="4">4학년</option>
-            </select>
-          </div>
-          <div>
-            <label
-              htmlFor="region"
-              className="mb-1.5 block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-            >
-              지역 <span className="text-red-400">*</span>
-            </label>
-            <select
-              id="region"
-              name="region"
-              required
-              value={form.region}
-              onChange={handleChange}
-              className={inputClass}
-            >
-              <option value="">선택</option>
-              {REGIONS.map((r) => (
-                <option key={r} value={r}>
-                  {r}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Discord ID */}
-        <div>
-          <label
-            htmlFor="discord_id"
-            className="mb-1.5 block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-          >
-            Discord ID{" "}
-            <span className="font-normal text-zinc-400">(선택)</span>
-          </label>
-          <input
-            id="discord_id"
-            name="discord_id"
-            type="text"
-            value={form.discord_id}
-            onChange={handleChange}
-            placeholder="username#1234"
-            className={inputClass}
-          />
-        </div>
-
-        {/* 관심 키워드 */}
-        <div>
-          <label
-            htmlFor="keyword"
-            className="mb-1.5 block text-sm font-semibold text-zinc-700 dark:text-zinc-300"
-          >
-            관심 키워드{" "}
-            <span className="font-normal text-zinc-400">(최대 10개)</span>
-          </label>
-          <div className="flex gap-2">
-            <input
-              id="keyword"
-              type="text"
-              value={keywordInput}
-              onChange={(e) => setKeywordInput(e.target.value)}
-              onKeyDown={handleKeywordKeyDown}
-              placeholder="예: 장학금, 취업, 동아리"
-              className={`flex-1 ${inputClass}`}
-            />
-            <button
-              type="button"
-              onClick={addKeyword}
-              className="shrink-0 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
-            >
-              추가
-            </button>
-          </div>
-          {keywords.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-2">
-              {keywords.map((kw) => (
-                <span
-                  key={kw}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700 dark:bg-blue-950/50 dark:text-blue-300"
-                >
-                  {kw}
-                  <button
-                    type="button"
-                    onClick={() => removeKeyword(kw)}
-                    className="text-blue-400 transition-colors hover:text-blue-600 dark:text-blue-500 dark:hover:text-blue-300"
-                  >
-                    &times;
-                  </button>
-                </span>
-              ))}
+    <div className="flex min-h-screen flex-col">
+      {/* Nav */}
+      <header className="fixed top-0 z-50 w-full border-b border-white/10 bg-[#003876]/95 backdrop-blur-md">
+        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5">
+          <a href="/" className="flex items-center gap-2.5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-base font-extrabold text-[#003876]">
+              M
             </div>
-          )}
+            <span className="text-lg font-bold text-white">명지클로</span>
+          </a>
+          <nav className="flex items-center gap-2">
+            <a
+              href="/register"
+              className="rounded-lg px-3.5 py-2 text-sm font-medium text-white/80 transition-colors hover:text-white"
+            >
+              프로필 등록
+            </a>
+            <a
+              href="/dashboard"
+              className="rounded-lg px-3.5 py-2 text-sm font-medium text-white/80 transition-colors hover:text-white"
+            >
+              대시보드
+            </a>
+            <a
+              href="/register"
+              className="ml-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[#003876] transition-all hover:bg-white/90"
+            >
+              시작하기
+            </a>
+          </nav>
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section className="relative flex flex-1 flex-col items-center justify-center overflow-hidden bg-gradient-to-b from-[#003876] via-[#004a9e] to-[#0060c7] px-5 pt-16 text-center">
+        {/* Background decoration */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute left-1/4 top-1/4 h-96 w-96 rounded-full bg-white blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 h-72 w-72 rounded-full bg-white blur-3xl" />
         </div>
 
-        {/* 구분선 */}
-        <div className="border-t border-zinc-100 dark:border-zinc-800" />
+        <div className="relative z-10 mx-auto max-w-3xl py-20 sm:py-32">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-sm text-white/90 backdrop-blur-sm">
+            <span className="inline-block h-2 w-2 rounded-full bg-emerald-400" />
+            명지대학교 학생 전용 서비스
+          </div>
 
-        {/* 제출 */}
-        <button
-          type="submit"
-          disabled={submitting}
-          className="w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-blue-700 hover:shadow-md active:scale-[0.98] disabled:opacity-50 disabled:hover:shadow-sm"
+          <h1 className="mb-6 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl md:text-6xl">
+            학교생활의 모든 것,
+            <br />
+            <span className="bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+              명지클로가 알려줄게요
+            </span>
+          </h1>
+
+          <p className="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-blue-100/90 sm:text-xl">
+            학식, 셔틀, 시간표, 졸업요건부터 맞춤 공지 알림까지.
+            <br className="hidden sm:block" />
+            AI 비서가 명지대 생활을 도와드립니다.
+          </p>
+
+          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
+            <a
+              href="/register"
+              className="w-full rounded-2xl bg-white px-8 py-4 text-base font-bold text-[#003876] shadow-lg shadow-black/10 transition-all hover:-translate-y-0.5 hover:shadow-xl sm:w-auto"
+            >
+              시작하기
+            </a>
+            <a
+              href="/dashboard"
+              className="w-full rounded-2xl border border-white/25 bg-white/10 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 sm:w-auto"
+            >
+              대시보드 보기
+            </a>
+          </div>
+        </div>
+
+        {/* Wave divider */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg viewBox="0 0 1440 80" fill="none" className="w-full">
+            <path
+              d="M0 40C360 80 720 0 1080 40C1260 60 1380 60 1440 55V80H0V40Z"
+              className="fill-[#f7f9fc] dark:fill-[#050a14]"
+            />
+          </svg>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="mx-auto max-w-6xl px-5 py-20">
+        <div className="mb-14 text-center">
+          <h2 className="mb-3 text-2xl font-bold text-[#003876] sm:text-3xl dark:text-blue-200">
+            주요 기능
+          </h2>
+          <p className="text-zinc-500 dark:text-zinc-400">
+            명지클로가 제공하는 서비스를 확인하세요
+          </p>
+        </div>
+
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            {
+              icon: "🔔",
+              title: "맞춤 알림",
+              desc: "관심 키워드를 등록하면 관련 공지가 올라올 때 자동으로 알려드려요.",
+            },
+            {
+              icon: "🍚",
+              title: "학식 메뉴",
+              desc: "오늘 학식 뭐 나오는지 매일 자동으로 확인해서 알려드려요.",
+            },
+            {
+              icon: "🚌",
+              title: "셔틀 시간표",
+              desc: "다음 셔틀이 언제 오는지, 실시간으로 확인할 수 있어요.",
+            },
+            {
+              icon: "📅",
+              title: "시간표 관리",
+              desc: "내 시간표를 등록하고 언제든 조회할 수 있어요.",
+            },
+            {
+              icon: "🎓",
+              title: "졸업요건 조회",
+              desc: "학과별 졸업에 필요한 학점과 조건을 한눈에 확인하세요.",
+            },
+            {
+              icon: "💬",
+              title: "Discord 연동",
+              desc: "Discord로 알림을 받을 수 있어요. 오픈클로 봇과 연동됩니다.",
+            },
+          ].map((f) => (
+            <div
+              key={f.title}
+              className="group rounded-2xl border border-zinc-200 bg-white p-6 transition-all hover:-translate-y-1 hover:border-[#003876]/20 hover:shadow-lg hover:shadow-[#003876]/5 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-blue-800"
+            >
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#003876]/5 text-2xl dark:bg-blue-900/30">
+                {f.icon}
+              </div>
+              <h3 className="mb-2 text-lg font-bold text-zinc-900 dark:text-zinc-100">
+                {f.title}
+              </h3>
+              <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
+                {f.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="border-t border-zinc-200 bg-zinc-50 px-5 py-16 text-center dark:border-zinc-800 dark:bg-zinc-900/50">
+        <h2 className="mb-3 text-2xl font-bold text-zinc-900 dark:text-zinc-100">
+          지금 바로 시작하세요
+        </h2>
+        <p className="mb-8 text-zinc-500 dark:text-zinc-400">
+          프로필 등록은 1분이면 충분합니다
+        </p>
+        <a
+          href="/register"
+          className="inline-block rounded-2xl bg-[#003876] px-8 py-4 text-base font-bold text-white shadow-lg transition-all hover:-translate-y-0.5 hover:bg-[#004a9e] hover:shadow-xl"
         >
-          {submitting ? "등록 중..." : "프로필 등록하기"}
-        </button>
-      </form>
+          프로필 등록하기
+        </a>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-zinc-200 bg-white px-5 py-8 dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 text-sm text-zinc-400 sm:flex-row">
+          <div className="flex items-center gap-2">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-[#003876] text-[10px] font-bold text-white">
+              M
+            </div>
+            <span>명지클로</span>
+          </div>
+          <p>명지대학교 학생들을 위한 AI 비서 서비스</p>
+        </div>
+      </footer>
     </div>
   );
 }
