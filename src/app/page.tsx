@@ -105,35 +105,42 @@ export default function Landing() {
               icon: "🔔",
               title: "맞춤 알림",
               desc: "관심 키워드를 등록하면 관련 공지가 올라올 때 자동으로 알려드려요.",
+              href: "/register",
             },
             {
               icon: "🍚",
               title: "학식 메뉴",
               desc: "오늘 학식 뭐 나오는지 매일 자동으로 확인해서 알려드려요.",
+              href: "/meal",
             },
             {
               icon: "🚌",
               title: "셔틀 시간표",
               desc: "다음 셔틀이 언제 오는지, 실시간으로 확인할 수 있어요.",
+              href: "/shuttle",
             },
             {
               icon: "📅",
               title: "시간표 관리",
               desc: "내 시간표를 등록하고 언제든 조회할 수 있어요.",
+              href: "/dashboard",
             },
             {
               icon: "🎓",
               title: "졸업요건 조회",
               desc: "학과별 졸업에 필요한 학점과 조건을 한눈에 확인하세요.",
+              href: "/graduation",
             },
             {
               icon: "💬",
               title: "Discord 연동",
               desc: "Discord로 알림을 받을 수 있어요. 오픈클로 봇과 연동됩니다.",
+              href: "/register",
             },
           ].map((f) => (
-            <div
+            <a
               key={f.title}
+              href={f.href}
               className="group rounded-2xl border border-zinc-200 bg-white p-6 transition-all hover:-translate-y-1 hover:border-[#003876]/20 hover:shadow-lg hover:shadow-[#003876]/5 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-blue-800"
             >
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#003876]/5 text-2xl dark:bg-blue-900/30">
@@ -145,7 +152,7 @@ export default function Landing() {
               <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">
                 {f.desc}
               </p>
-            </div>
+            </a>
           ))}
         </div>
       </section>
