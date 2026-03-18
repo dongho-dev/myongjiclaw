@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "명지클로 - 명지대 알림 서비스",
-  description: "명지대학교 학생을 위한 맞춤 알림 서비스",
+  title: "명지클로 - 명지대 AI 비서",
+  description: "명지대학교 학생들을 위한 AI 비서 서비스",
 };
 
 export default function RootLayout({
