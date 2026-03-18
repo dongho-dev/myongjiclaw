@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { TopNav, BottomNav } from "@/components/nav";
 
 interface GraduationData {
   department: string;
@@ -45,26 +46,8 @@ export default function GraduationPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f7f9fc] dark:bg-[#050a14]">
-      <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white/90 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/90">
-        <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-5">
-          <a href="/" className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#003876] text-xs font-bold text-white">
-              M
-            </div>
-            <span className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-              명지클로
-            </span>
-          </a>
-          <a
-            href="/dashboard"
-            className="text-sm font-medium text-zinc-500 hover:text-[#003876]"
-          >
-            대시보드
-          </a>
-        </div>
-      </header>
-
+    <div className="min-h-screen bg-[#f7f9fc] pb-20 sm:pb-0 dark:bg-[#050a14]">
+      <TopNav />
       <main className="mx-auto max-w-2xl px-5 py-10">
         <div className="mb-8 text-center">
           <div className="mb-3 text-4xl">🎓</div>
@@ -74,7 +57,6 @@ export default function GraduationPage() {
           <p className="text-sm text-zinc-500">학과를 선택하면 졸업에 필요한 조건을 확인할 수 있어요</p>
         </div>
 
-        {/* 학과 선택 그리드 */}
         <div className="mb-8 grid grid-cols-2 gap-2 sm:grid-cols-3">
           {DEPARTMENTS.map((d) => (
             <button
@@ -103,7 +85,6 @@ export default function GraduationPage() {
 
         {data && !loading && (
           <div className="space-y-4">
-            {/* 학점 카드 */}
             <div className="grid grid-cols-3 gap-3">
               {[
                 { label: "총 이수학점", value: data.total_credits },
@@ -124,21 +105,16 @@ export default function GraduationPage() {
               ))}
             </div>
 
-            {/* 상세 정보 */}
             <div className="rounded-2xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
               <div className="divide-y divide-zinc-100 dark:divide-zinc-800">
                 <div className="flex items-center justify-between px-5 py-4">
-                  <span className="text-sm font-medium text-zinc-500">
-                    어학 요건
-                  </span>
+                  <span className="text-sm font-medium text-zinc-500">어학 요건</span>
                   <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     {data.language}
                   </span>
                 </div>
                 <div className="flex items-center justify-between px-5 py-4">
-                  <span className="text-sm font-medium text-zinc-500">
-                    최소 평점
-                  </span>
+                  <span className="text-sm font-medium text-zinc-500">최소 평점</span>
                   <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                     {data.gpa_minimum} / 4.5
                   </span>
@@ -146,7 +122,6 @@ export default function GraduationPage() {
               </div>
             </div>
 
-            {/* 기타 요건 */}
             <div className="rounded-2xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
               <h3 className="mb-3 text-sm font-bold text-zinc-700 dark:text-zinc-300">
                 기타 요건
@@ -166,6 +141,7 @@ export default function GraduationPage() {
           </div>
         )}
       </main>
+      <BottomNav />
     </div>
   );
 }

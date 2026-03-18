@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { TopNav, BottomNav } from "@/components/nav";
 
 interface MealData {
   date: string;
@@ -28,26 +29,8 @@ export default function MealPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f9fc] dark:bg-[#050a14]">
-      <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white/90 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/90">
-        <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-5">
-          <a href="/" className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#003876] text-xs font-bold text-white">
-              M
-            </div>
-            <span className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-              명지클로
-            </span>
-          </a>
-          <a
-            href="/dashboard"
-            className="text-sm font-medium text-zinc-500 hover:text-[#003876]"
-          >
-            대시보드
-          </a>
-        </div>
-      </header>
-
+    <div className="min-h-screen bg-[#f7f9fc] pb-20 sm:pb-0 dark:bg-[#050a14]">
+      <TopNav />
       <main className="mx-auto max-w-2xl px-5 py-10">
         <div className="mb-8 text-center">
           <div className="mb-3 text-4xl">🍚</div>
@@ -99,6 +82,7 @@ export default function MealPage() {
           </div>
         )}
       </main>
+      <BottomNav />
     </div>
   );
 }

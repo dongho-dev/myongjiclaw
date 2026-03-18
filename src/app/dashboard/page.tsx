@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { TopNav, BottomNav } from "@/components/nav";
 
 interface Student {
   id: number;
@@ -128,28 +129,8 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f7f9fc] dark:bg-[#050a14]">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-zinc-200 bg-white/90 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-950/90">
-        <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-5">
-          <a href="/" className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#003876] text-xs font-bold text-white">
-              M
-            </div>
-            <span className="text-base font-bold text-zinc-900 dark:text-zinc-100">
-              명지클로
-            </span>
-          </a>
-          <div className="flex items-center gap-2">
-            <a
-              href="/register"
-              className="rounded-lg px-3 py-1.5 text-sm font-medium text-zinc-500 hover:text-[#003876] dark:text-zinc-400"
-            >
-              프로필 등록
-            </a>
-          </div>
-        </div>
-      </header>
+    <div className="min-h-screen bg-[#f7f9fc] pb-20 sm:pb-0 dark:bg-[#050a14]">
+      <TopNav />
 
       <main className="mx-auto max-w-6xl px-5 py-8">
         {/* Title + Tabs */}
@@ -597,6 +578,7 @@ export default function Dashboard() {
           </div>
         )}
       </main>
+      <BottomNav />
     </div>
   );
 }
